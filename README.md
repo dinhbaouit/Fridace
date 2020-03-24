@@ -2,7 +2,7 @@
 
 Quick trace with frida
 
-# Requirement
+# Set Up
 
 ```
 $ pip install frida-tools
