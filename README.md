@@ -4,9 +4,11 @@ Quick trace with frida
 
 # Requirement
 
-```$ pip install frida-tools```\s\s
-```$ git clone https://github.com/dinhbaouit/Fridace.git```\s\s
-```$ cd Fridace```\s\s
+```
+$ pip install frida-tools
+$ git clone https://github.com/dinhbaouit/Fridace.git
+$ cd Fridace
+```
 
 # Usage: 
 
