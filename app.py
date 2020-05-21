@@ -185,7 +185,8 @@ def jscode_tracefunction(function_list, backtrace_flag):
 
 	  var script = "var ret = this." + func + '(' + args.join(',') + ") || '';\\n"
 		+ "console.log('--------------------------------------------------------------------------------');"
-		+ "console.log(JSON.stringify(" + argLog + "));\\n"
+		+ "console.log('[Param] '); console.log(JSON.stringify(" + argLog + "));\\n"
+		+ "console.log('[Return] '); console.log(ret);"
 		+ '    """+bt+"""'
 		+ "return ret;"
 
