@@ -17,7 +17,7 @@ Option:
 	sys.exit(2)
 
 
-def jscode_traceclass(class_list,backtrace_flag):
+def jscode_traceclass(class_list,backtrace_flag, function_flag):
 	class_list_str = '"'+'","'.join([str(elem) for elem in class_list]) + '"'
 	if backtrace_flag == 1:
 		bt = "printBacktrace()"
@@ -146,61 +146,13 @@ var Main = function() {
 	Java.perform(function () { // avoid java.lang.ClassNotFoundException
 		[
 			"""+class_list_str+"""
-		].forEach(traceClass);
+		].forEach("""+function_flag+""");
 	});
 };
 
 Java.perform(Main);
 """
 
-def jscode_tracefunction(function_list, backtrace_flag):
-	hookoverload = ""
-	count = len(function_list)
-	for func in function_list:
-		dot = func.rfind(".")
-		class_name = func[:dot]
-		function_name = func[dot+1:]
-		hookoverload += "hookOverloads('"+class_name+"','"+function_name+"');\n";
-	if backtrace_flag == 1:
-		bt = 'Java.perform(function() {var bt = Java.use("android.util.Log").getStackTraceString(Java.use("java.lang.Exception").$new());console.log("Backtrace:" + bt);});'
-	else:
-		bt = ''
-	return """function hookOverloads(className, func) {
-  var clazz = Java.use(className);
-  var overloads = clazz[func].overloads;
-  for (var i in overloads) {
-	  
-	if (overloads[i].hasOwnProperty('argumentTypes')) {
-	  var parameters = [];
-
-	  var curArgumentTypes = overloads[i].argumentTypes, args = [], argLog = '[';
-
-	  for (var j in curArgumentTypes) {
-		var cName = curArgumentTypes[j].className;
-		parameters.push(cName);
-		argLog += "'(" + cName + ") ' + v" + j + ",";
-		args.push('v' + j);
-	  }
-	  argLog += ']';
-
-	  var script = "var ret = this." + func + '(' + args.join(',') + ") || '';\\n"
-		+ "console.log('--------------------------------------------------------------------------------');"
-		+ "console.log('[Param] '); console.log(JSON.stringify(" + argLog + "));\\n"
-		+ "console.log('[Return] '); console.log(ret);"
-		+ '    """+bt+"""'
-		+ "return ret;"
-
-	  args.push(script);
-	  clazz[func].overload.apply(this, parameters).implementation = Function.apply(null, args);
-	}
-  }
-}
-
-Java.perform(function() {
-	console.log("-----------------------------------------------");
-  """+hookoverload+"""
-})
-"""
 
 def on_message(message, data):
 	print "============================================"
@@ -240,13 +192,11 @@ def main():
 
 	if option == 1 or option == 0 and args != []:
 		class_list = args
-		jscode_perform = jscode_traceclass(class_list, backtrace_flag)
-
+		jscode_perform = jscode_traceclass(class_list, backtrace_flag, "traceClass")
 
 	if option == 2 and args != []:
 		function_list = args
-		jscode_perform = jscode_tracefunction(function_list, backtrace_flag)
-
+		jscode_perform = jscode_traceclass(function_list, backtrace_flag, "traceMethod")
 	if process_name == "" or jscode_perform == "":
 		printusage()
 
