@@ -16,8 +16,8 @@ Trace class   : ```python app.py [option] -c -p [process name] class1 class2 cla
 
 Trace function: ```python app.py [option] -f -p [process name] function1, function2, function3 ...```
 
-Option:
-	-n,    --no-backtrace      Set no backtrace
+** Option:
+	-n	Set no backtrace
 
 # Author
 dinhbaouit aka 0xd0ff9 (https://twitter.com/Jok3rDb)
